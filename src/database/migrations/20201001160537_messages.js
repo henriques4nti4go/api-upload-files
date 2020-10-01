@@ -6,11 +6,10 @@ exports.up = function(knex) {
         table.integer('user_id').notNullable();
         table.timestamps();
     });
-
+  
 };
 
 exports.down = function(knex) {
     return knex.schema
     .dropTable("messages");
-    
 };

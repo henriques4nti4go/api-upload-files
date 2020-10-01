@@ -1,7 +1,8 @@
 const connection = require('../database/connection');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
-
+const jwt = require('jsonwebtoken');
+const authKey = require('../config/auth.json');
 const Token = require('../auth/token');
 
 function functions() {
@@ -66,7 +67,6 @@ function functions() {
                 return response.json({
                     message: 'user not found',
                 });
-
             }
 
             if (!bcrypt.compare(password,table.password)) {
@@ -105,10 +105,59 @@ function functions() {
 
     }
 
+    const authenticateWithToken = async function (request, response, next) {
+        try {
+            const {
+                token,
+            } = request.body;
+    
+            if (!token) {
+                return response.json({
+                    message: 'you need to authenticate',
+                });
+            }
+    
+            let auth = jwt.verify(token,authKey.SECRET_KEY);
+            if (auth) next();
+    
+        } catch (error) {
+            return response.json({
+                message: 'an error has occurred of authentication token',
+                error,
+            })
+        }
+    }
+
+    const sendMessage = async function (request, response) {
+        try {
+            const {
+                user_id,
+                message,
+            } = request.body;
+
+            await connection('messages').insert({
+                user_id,
+                message,
+            });
+
+            return response.json({
+                message: 'created',
+            })
+
+        } catch (error) {
+            response.json({
+                message: 'on erro has ocurred',
+                error,
+            })
+        }
+    }
+
     return{
         store,
         index,
         auth,
+        authenticateWithToken,
+        sendMessage,
     }
 }
 
