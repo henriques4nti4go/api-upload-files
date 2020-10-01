@@ -3,13 +3,14 @@ const crypto = require('crypto');
 // const connection = require('./database/connection.js');
 const users = require('./controllers/UserController');
 const route = express.Router();
+const jwt  = require('jsonwebtoken');
 
 route.get('/', (req, res) => {
     return res.json({message: 'ok'})
 });
 
-route.get('/api/users', users.index);
+route.post('/api/auth/login',users.auth);
 
-route.post('/api/users', users.store);
+route.post('/api/auth/register', users.store);
 
 module.exports = route;

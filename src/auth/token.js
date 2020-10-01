@@ -1,12 +1,13 @@
 const JWT = require('jsonwebtoken');
 require('dotenv').config();
+const authConfig = require('../config/auth.json');
 
 function token() {
     async function generate(payload) {
         return new Promise((resolve, reject) => {
             let tk = JWT.sign(
                 payload,
-                process.env.SECRET_KEY
+                authConfig.SECRET_KEY
             );
             resolve(tk);
         })
