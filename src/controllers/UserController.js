@@ -44,7 +44,7 @@ function functions() {
             });
 
             return response.json({
-                status: '201',
+                status: true,
                 message: 'created',
             });
 
@@ -66,12 +66,14 @@ function functions() {
             if (!table) {
                 return response.json({
                     message: 'user not found',
+                    state: false,
                 });
             }
 
             if (!bcrypt.compare(password,table.password)) {
                 return response.json({
                     message: 'incorrect password',
+                    state: false,
                 })
             }
 
@@ -79,13 +81,15 @@ function functions() {
             
             return response.json({
                 id: table.id,
-                token
+                token,
+                state: true
             })
             
         } catch (error) {
             return response.json({
                 message: 'an error has occurred',
                 error,
+                state: false
             })
         }
     }
@@ -128,36 +132,11 @@ function functions() {
         }
     }
 
-    const sendMessage = async function (request, response) {
-        try {
-            const {
-                user_id,
-                message,
-            } = request.body;
-
-            await connection('messages').insert({
-                user_id,
-                message,
-            });
-
-            return response.json({
-                message: 'created',
-            })
-
-        } catch (error) {
-            response.json({
-                message: 'on erro has ocurred',
-                error,
-            })
-        }
-    }
-
     return{
         store,
         index,
         auth,
         authenticateWithToken,
-        sendMessage,
     }
 }
 
