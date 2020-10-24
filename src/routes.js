@@ -3,6 +3,7 @@ const crypto = require('crypto');
 // const connection = require('./database/connection.js');
 const users = require('./controllers/UserController');
 const message = require('./controllers/MessageController');
+const auth = require('./controllers/AuthController');
 const route = express.Router();
 const jwt  = require('jsonwebtoken');
 const authKey = require('./config/auth.json');
@@ -25,7 +26,7 @@ route.get('/', (req, res) => {
  * status: String
  * message: String
  */
-route.post('/api/auth/login',users.auth);
+// route.post('/api/user/login',users.auth);
 
 /**
  * @register
@@ -40,12 +41,10 @@ route.post('/api/auth/login',users.auth);
  * status: String
  * message: String
  */
-route.post('/api/auth/register', users.store);
+route.post('/api/user/register', users.register);
 
-route.use(users.authenticateWithToken);
-route.post('/api/users/', users.index);
-route.post('/api/message/show', message.showMessages);
-route.post('/api/message/send', message.sendMessage);
+route.post('/api/auth/login', auth.login);
+route.use(auth.authenticateWithToken);
 
 
 

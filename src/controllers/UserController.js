@@ -6,23 +6,19 @@ const authKey = require('../config/auth.json');
 const Token = require('../auth/token');
 
 function functions() {
+    const register = async function (request, response) {
+        const trx = await connection.transaction();
 
-    const index = async function (request,response) {
-        let table = await connection('users').select('id','name','login');
-
-        return response.json({message: table}); 
-    
-    }
-
-    const store = async function (request, response) {
         try {
+        
             const {
                 name, 
                 login, 
                 date_of_birth,
                 password,
+                genre
             } = request.body;
-
+            
             let date = new Date().toLocaleString();
             let isUser = await verifyUser(login);
             
@@ -34,66 +30,34 @@ function functions() {
 
             password_crypt = await bcrypt.hash(password, 10);
             
-            await connection('users').insert({
-                name,
+            let table = await trx('users').returning('id').insert({
                 login,
                 password: password_crypt,
-                date_of_birth,
                 created_at: date,
                 updated_at: date,
             });
 
+            await trx('persons').insert({
+                user_id: table[0],
+                name,
+                date_of_birth: date_of_birth,
+                genre,
+                created_at: date,
+                updated_at: date,
+            })
+
+            trx.commit();
             return response.json({
                 status: true,
                 message: 'created',
             });
 
         } catch (error) {
-            console.log(error)
-            return response.json({message: 'erro'})
+            trx.rollback();
+            return response.json({status: 'error', message: error});
         }
     }
     
-    const auth = async function (request, response, next) {
-        try {
-            const {
-                login,
-                password,
-            } = request.body;
-            
-            let table = await connection('users').where({login}).first('id', 'login', 'password');
-            
-            if (!table) {
-                return response.json({
-                    message: 'user not found',
-                    state: false,
-                });
-            }
-
-            if (!bcrypt.compare(password,table.password)) {
-                return response.json({
-                    message: 'incorrect password',
-                    state: false,
-                })
-            }
-
-            let token = await Token.generate(table.id);
-            
-            return response.json({
-                id: table.id,
-                token,
-                state: true
-            })
-            
-        } catch (error) {
-            return response.json({
-                message: 'an error has occurred',
-                error,
-                state: false
-            })
-        }
-    }
-
     const verifyUser = async function (login) {
         let response = await connection('users').where({login:login}).first('id');
         let status = false;
@@ -109,34 +73,11 @@ function functions() {
 
     }
 
-    const authenticateWithToken = async function (request, response, next) {
-        try {
-            const {
-                token,
-            } = request.body;
-    
-            if (!token) {
-                return response.json({
-                    message: 'you need to authenticate',
-                });
-            }
-    
-            let auth = jwt.verify(token,authKey.SECRET_KEY);
-            if (auth) next();
-    
-        } catch (error) {
-            return response.json({
-                message: 'an error has occurred of authentication token',
-                error,
-            })
-        }
-    }
-
     return{
-        store,
-        index,
-        auth,
-        authenticateWithToken,
+        register,
+        // index,
+        // auth,
+        // authenticateWithToken,
     }
 }
 
