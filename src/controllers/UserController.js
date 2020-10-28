@@ -73,8 +73,59 @@ function functions() {
 
     }
 
+    const updateProfile = async function (request, response) {
+        const trx = await connection.transaction();
+
+        try {
+        
+            const {
+                name, 
+                login, 
+                date_of_birth,
+                password,
+                genre,
+                city,
+                state,
+                country,
+                profile_photo
+            } = request.body;
+            
+            let date = new Date().toLocaleString();
+            let isUser = await trx('users').where({login:login}).first('*');
+
+            let person = await trx('persons').where({user_id: isUser.id}).first('*');
+            
+            await trx('persons').where({user_id: isUser.id}).update({
+                name: name ? name : person.name,
+                date_of_birth: date_of_birth ? date_of_birth : person.date_of_birth,
+                genre: genre ? genre : person.genre,
+                city: city ? city : person.city,
+                state: state? state : person.state,
+                country: country ? country : person.country,
+                profile_photo: profile_photo ? profile_photo : person.profile_photo,
+            })
+
+            // password_crypt = await bcrypt.hash(password, 10);
+            let updated_user = await trx('persons').where({user_id: isUser.id}).first('*');
+            trx.commit();
+            return response.json({
+                status: true,
+                message: 'updated',
+                updated_user,
+            });
+
+        } catch (error) {
+            console.log(error)
+            trx.rollback();
+            return response.json({status: 'error', message: error});
+        }
+    }
+
+
+
     return{
         register,
+        updateProfile,
         // index,
         // auth,
         // authenticateWithToken,

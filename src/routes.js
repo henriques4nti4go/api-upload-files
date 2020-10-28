@@ -43,6 +43,8 @@ route.get('/', (req, res) => {
  */
 route.post('/api/user/register', users.register);
 
+route.post('/api/user/updateProfile', users.updateProfile);
+
 route.post('/api/auth/login', auth.login);
 route.use(auth.authenticateWithToken);
 

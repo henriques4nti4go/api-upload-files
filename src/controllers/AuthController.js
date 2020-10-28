@@ -1,5 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const authKey = require('../config/auth.json');
 const Token = require('../auth/token');
 const connection = require('../database/connection');
@@ -35,18 +36,18 @@ function functions() {
                 login,
                 password,
             } = request.body;
-            
+
             let table = await connection('users').where({login}).first('id', 'login', 'password');
 
+            
             if (!table) {
                 return response.json({
                     message: 'user not found',
                     state: false,
                 });
             }
-            
             let person_data = await connection('persons').where({id: table.id}).first('*');
-
+            
             if (!bcrypt.compare(password,table.password)) {
                 return response.json({
                     message: 'incorrect password',
@@ -54,12 +55,15 @@ function functions() {
                 })
             }
 
+            
+
             let token = await Token.generate(table.id);
             
             return response.json({
-                id: table.id,
+                user: table,
                 token,
                 state: true,
+                
                 person_data,
             })
             
