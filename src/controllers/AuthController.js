@@ -57,13 +57,15 @@ function functions() {
 
             
 
-            let token = await Token.generate(table.id);
+            let token = await Token.generate({
+                login: table.login,
+                password: table.password,
+            });
             
             return response.json({
                 user: table,
                 token,
                 state: true,
-                
                 person_data,
             })
             

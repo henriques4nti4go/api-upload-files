@@ -18,7 +18,7 @@ function functions() {
                 password,
                 genre
             } = request.body;
-            
+
             let date = new Date().toLocaleString();
             let isUser = await verifyUser(login);
             
@@ -87,10 +87,21 @@ function functions() {
                 city,
                 state,
                 country,
-                profile_photo
+                profile_photo,
+                token,
             } = request.body;
+
+            let auth = require('../config/auth.json');
             
-            let date = new Date().toLocaleString();
+            var decoded = jwt.verify(token,auth.SECRET_KEY);
+            
+            if (password !== decoded.password) {
+                return response.json({
+                    message: 'incorrect token',
+                })
+            }
+            
+            // let date = new Date().toLocaleString();
             let isUser = await trx('users').where({login:login}).first('*');
 
             let person = await trx('persons').where({user_id: isUser.id}).first('*');
