@@ -10,6 +10,7 @@ const jwt  = require('jsonwebtoken');
 const authKey = require('./config/auth.json');
 const multer = require('multer');
 
+const multerConfig = require('./config/multer');
 
 route.get('/', (req, res) => {
     return res.json({message: 'ok'})
@@ -66,10 +67,10 @@ route.post('/api/user/register', users.register);
  */
 
 
-route.use(auth.authenticateWithToken);
+// route.use(auth.authenticateWithToken);
 route.post('/api/user/updateProfile', users.updateProfile);
 
-route.post('/api/user/uploadPhotos', media.uploadPhotos);
+route.post('/api/user/uploadPhotos',multer(multerConfig).single('image'), media.uploadPhotos);
 
 
 

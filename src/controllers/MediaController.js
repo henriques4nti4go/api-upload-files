@@ -6,6 +6,7 @@ const authKey = require('../config/auth.json');
 const Token = require('../auth/token');
 const aws_credentials = require('../config/aws_credentials.json');
 const AWS = require('aws-sdk');
+const fs = require('fs');
 
 function functions() {
     const uploadPhotos = async function (request, response) {
@@ -13,16 +14,35 @@ function functions() {
         try {
             const {
                 token,
-                id,
-                photo,
+                user_id,
+                description,
             } = request.body;
-            console.log(JSON.stringify(photo))
+
+            const {
+                filename,
+                path,
+            } = request.file;
+            let image_uri = await uploadImageAws({
+                filename: `${filename}.jpeg`,
+                path,
+            });
+
+            let image_id = await trx('images').insert({
+                user_id,
+                image_uri,
+            }).returning('id');
             
-            // await uploadImageAws();
+            await trx('posts').insert({
+                user_id,
+                image_id: image_id[0],
+                description: description,
+            })
+
             trx.commit();
             return response.json({
                 status: true,
                 message: 'created',
+
             });
 
         } catch (error) {
@@ -32,20 +52,20 @@ function functions() {
         }
     }
     
-    const uploadImageAws = async function (params) {
-        let bucketName = 'node-sdk-sample-asldalsdlaskdl';
-        let objectParams = {Bucket: bucketName, Key: 'asdasld.txt', Body: 'Hello World!'};
+    const uploadImageAws = async function (file) {
+        let bucketName = process.env.BUCKET_MEDIA;
+        
+        const fileContent = fs.readFileSync(file.path);
+        let objectParams = {Bucket: bucketName, Key: file.filename, Body: fileContent, ACL: "public-read", ContentType: 'image/png'};
         // Create object upload promise
         let uploadPromise = new AWS.S3({
             apiVersion: '2006-03-01',
             accessKeyId: aws_credentials.id,
             secretAccessKey: aws_credentials.secret_key,
         });
-        
-        uploadPromise.putObject(objectParams).promise().then((data) => {
-            console.log('enviado')
-        });
-        
+        let { Location } = await uploadPromise.upload(objectParams).promise();
+        fs.unlinkSync(file.path)
+        return Location;
 
     }
 
