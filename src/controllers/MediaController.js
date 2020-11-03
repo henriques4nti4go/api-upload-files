@@ -7,6 +7,7 @@ const Token = require('../auth/token');
 const aws_credentials = require('../config/aws_credentials.json');
 const AWS = require('aws-sdk');
 const fs = require('fs');
+const Images = require('../database/Models/Media');
 
 function functions() {
     const uploadPhotos = async function (request, response) {
@@ -69,8 +70,18 @@ function functions() {
 
     }
 
+    const getMedia = async function (request, response) {
+        const {
+            id,
+        } = request.body;
+
+        const img = await Images.query().select("*");        
+        console.log(img);
+    }
+
     return{
         uploadPhotos,
+        getMedia,
         // index,
         // auth,
         // authenticateWithToken,

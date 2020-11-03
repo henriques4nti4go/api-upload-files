@@ -67,10 +67,11 @@ route.post('/api/user/register', users.register);
  */
 
 
-// route.use(auth.authenticateWithToken);
+route.use(auth.authenticateWithToken);
 route.post('/api/user/updateProfile', users.updateProfile);
 
 route.post('/api/user/uploadPhotos',multer(multerConfig).single('image'), media.uploadPhotos);
+route.post('/api/user/getMedia', media.getMedia);
 
 
 
