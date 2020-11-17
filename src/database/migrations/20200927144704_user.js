@@ -4,7 +4,8 @@ exports.up = function(knex) {
         table.increments();
         table.string('login').notNullable();
         table.string('password').notNullable();
-        table.timestamps();
+        table.integer('status').notNullable().defaultTo(1);
+        table.timestamps(true,true);
     });
 
 };

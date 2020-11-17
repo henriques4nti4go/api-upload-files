@@ -33,8 +33,6 @@ function functions() {
             let table = await trx('users').returning('id').insert({
                 login,
                 password: password_crypt,
-                created_at: date,
-                updated_at: date,
             });
 
             await trx('persons').insert({
@@ -42,8 +40,6 @@ function functions() {
                 name,
                 date_of_birth: date_of_birth,
                 genre,
-                created_at: date,
-                updated_at: date,
             })
 
             trx.commit();

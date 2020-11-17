@@ -6,7 +6,8 @@ exports.up = function(knex) {
         table.string('image_id');
         table.text('description').notNullable();
         table.foreign('user_id').references('id').inTable('users');
-        table.timestamps();
+        table.integer('status').notNullable().defaultTo(1);
+        table.timestamps(true,true);
     });
 };
 

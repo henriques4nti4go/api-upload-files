@@ -10,6 +10,7 @@ function functions() {
         try {
             const {
                 token,
+                user_id,
             } = request.body;
     
             if (!token) {
@@ -17,9 +18,16 @@ function functions() {
                     message: 'you need to authenticate',
                 });
             }
-    
             let auth = jwt.verify(token,authKey.SECRET_KEY);
-            if (auth) next();
+            
+            if (auth.id !== user_id) {
+                return response.json({
+                    status: 'ERROR TOKEN',
+                    message: 'token does not belong to the user',
+                })
+            }
+            
+            next();
     
         } catch (error) {
             return response.json({
@@ -58,6 +66,7 @@ function functions() {
             
 
             let token = await Token.generate({
+                id: table.id,
                 login: table.login,
                 password: table.password,
             });

@@ -2,7 +2,7 @@ POST http://localhost:3333/api/auth/login
 Content-Type: application/json
 
 {
-    "login": "paulo",
+    "login": "paulo2",
     "password": 12345678
 }
 #####
@@ -22,34 +22,35 @@ POST  http://localhost:3333/api/user/friends/sendSolicitation
 Content-Type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6InBhdWxvIiwicGFzc3dvcmQiOiIkMmEkMTAkb1lIaW1GRi5wMG4xTUdKOExpY3UzT2xFaFNBNlh1ZzZPYVZyTWNGM2pVYjVUTTZJZlhxaHkiLCJpYXQiOjE2MDU1NzI2ODZ9.HlEX8ISbgUsfbwjON9FhbnTZTrpQzEh4auF_Gq1q1cc",
-    "user_id": 6,
-    "solicitation_user_id": 5
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJwYXVsbyIsInBhc3N3b3JkIjoiJDJhJDEwJGdTUFduVTIxVjBXSFA0LkpxaEFjNC5SbHlwZms2SU42azZTcXlyN3pFWjFyQ3B6OU9XOGZPIiwiaWF0IjoxNjA1NjEzNTY2fQ.SwFipAHTwDD8vclatbIgwkk34CqgplHaKLrvyx6d2P0",
+    "user_id": 1,
+    "solicitation_user_id": 2
 }
 #####
 POST  http://localhost:3333/api/user/friends/getSolicitation
 Content-Type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6InBhdWxvIiwicGFzc3dvcmQiOiIkMmEkMTAkb1lIaW1GRi5wMG4xTUdKOExpY3UzT2xFaFNBNlh1ZzZPYVZyTWNGM2pVYjVUTTZJZlhxaHkiLCJpYXQiOjE2MDU1NzI2ODZ9.HlEX8ISbgUsfbwjON9FhbnTZTrpQzEh4auF_Gq1q1cc",
-    "user_id": 6
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibG9naW4iOiJwYXVsbzIiLCJwYXNzd29yZCI6IiQyYSQxMCRsd1p6Mm9WSFd4ZXQ0YTNzSnFoYml1a1dHN0FDNHFxc2FMbC5jcTJ6dVguN2NEZ2psOERuRyIsImlhdCI6MTYwNTYxNDQxMn0.-QSAvPpJnP5WaAwU5N9fgfKYH5YbipAX7ZcyjHIYyRM",
+    "user_id": 2
 }
 
 #####
+
 POST  http://localhost:3333/api/user/friends/responseSolicitation
 Content-Type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6InBhdWxvIiwicGFzc3dvcmQiOiIkMmEkMTAkb1lIaW1GRi5wMG4xTUdKOExpY3UzT2xFaFNBNlh1ZzZPYVZyTWNGM2pVYjVUTTZJZlhxaHkiLCJpYXQiOjE2MDU1NzI2ODZ9.HlEX8ISbgUsfbwjON9FhbnTZTrpQzEh4auF_Gq1q1cc",
-    "user_id": 6,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibG9naW4iOiJwYXVsbzIiLCJwYXNzd29yZCI6IiQyYSQxMCRsd1p6Mm9WSFd4ZXQ0YTNzSnFoYml1a1dHN0FDNHFxc2FMbC5jcTJ6dVguN2NEZ2psOERuRyIsImlhdCI6MTYwNTYxNTMxOH0.mE4eHAzkYZouBV7n-E0F2ssmI1lmIe8qS3-guYgkz-w",
+    "user_id": 2,
     "solicitation_id": 1,
-    "response": 1
+    "solicitation_response": 1
 }
 #####
 POST  http://localhost:3333/api/user/friends/
 Content-Type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6InBhdWxvIiwicGFzc3dvcmQiOiIkMmEkMTAkb1lIaW1GRi5wMG4xTUdKOExpY3UzT2xFaFNBNlh1ZzZPYVZyTWNGM2pVYjVUTTZJZlhxaHkiLCJpYXQiOjE2MDU1NzI2ODZ9.HlEX8ISbgUsfbwjON9FhbnTZTrpQzEh4auF_Gq1q1cc",
-    "user_id": 6
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibG9naW4iOiJwYXVsbzIiLCJwYXNzd29yZCI6IiQyYSQxMCRsd1p6Mm9WSFd4ZXQ0YTNzSnFoYml1a1dHN0FDNHFxc2FMbC5jcTJ6dVguN2NEZ2psOERuRyIsImlhdCI6MTYwNTYxNTMxOH0.mE4eHAzkYZouBV7n-E0F2ssmI1lmIe8qS3-guYgkz-w",
+    "user_id": 2
 }

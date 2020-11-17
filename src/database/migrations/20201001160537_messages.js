@@ -5,7 +5,8 @@ exports.up = function(knex) {
         table.text('message').notNullable();
         table.integer('user_id').notNullable();
         table.foreign('user_id').references('id').inTable('users');
-        table.timestamps();
+        table.integer('status').notNullable().defaultTo(1);
+        table.timestamps(true,true);
     });
   
 };

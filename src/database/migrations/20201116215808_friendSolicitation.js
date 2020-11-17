@@ -5,7 +5,7 @@ exports.up = function(knex) {
         table.integer('user_id').notNullable();
         table.integer('solicitation_user_id').notNullable();
         table.integer('status').notNullable().defaultTo(1);
-        table.timestamps();
+        table.timestamps(true,true);
     });
 };
 

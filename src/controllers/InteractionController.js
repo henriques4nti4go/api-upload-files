@@ -10,7 +10,7 @@ function functions() {
                 solicitation_user_id,
             } = request.body;
             let solicitation = await connection('friendSolicitations')
-            .where({solicitation_user_id}).first('id');
+            .where({solicitation_user_id,user_id}).first('id');
 
             if (solicitation) return response.json({
                 status: 'ERROR',
@@ -43,13 +43,13 @@ function functions() {
             } = request.body;
 
             const solicitations = await connection('friendSolicitations')
-            .where({user_id})
+            .where({solicitation_user_id: user_id, status: 1})
             .select('*');
 
             return response.json({
                 status: 'SUCCESS',
                 message: '',
-                data: solicitations,
+                response: solicitations,
             })
         } catch (error) {
             response.json({
@@ -62,29 +62,37 @@ function functions() {
 
     const responseFriendSolicitation = async function (request, response) {
         const trx = await connection.transaction();
+
         try {
             const {
                 solicitation_id,
                 user_id,
-                response,
+                solicitation_response,
             } = request.body;
 
-            let { solicitation_user_id } = await trx('friendSolicitations')
+            let solicitation = await connection('friendSolicitations')
             .where({
                 id: solicitation_id,
-                user_id,
                 status: 1,
             })
-            .update({status: response})
-            .returning('solicitation_user_id');
+            .update({status: 0})
+            .returning('*');
 
-            if (solicitation_user_id) {
-                await trx('friends').insert({
-                    user_id,
-                    friend_id: solicitation_user_id
-                });
+            if (solicitation_response) {
+                if (solicitation[0].id) {
+                    await trx('friends').insert({
+                        user_id: solicitation[0].user_id,
+                        friend_id: solicitation[0].solicitation_user_id,
+                    });
+                    await trx('friends').insert({
+                        user_id: solicitation[0].solicitation_user_id,
+                        friend_id: solicitation[0].user_id,
+                    });
+                }
             }
+
             trx.commit();
+            
             return response.json({
                 status: 'SUCCESS',
                 message: 'solicitation response!'
@@ -109,13 +117,13 @@ function functions() {
             
 
             const friends = await connection('friends')
-            .where({user_id, status:1})
+            .where({user_id})
             .select('*');
-            return console.log(friends)
+
             return response.json({
                 status: 'SUCCESS',
                 message: 'your friends!',
-                data: friends,
+                response: friends,
             })
         } catch (error) {
             console.log(error);

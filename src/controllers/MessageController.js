@@ -17,8 +17,6 @@ function functions() {
             await connection('messages').insert({
                 user_id,
                 message,
-                created_at: getDate(),
-                updated_at: getDate(),
             });
 
             return response.json({
@@ -50,10 +48,6 @@ function functions() {
                 state: false
             })
         }
-    }
-
-    const getDate = function () {
-        return new Date().toLocaleString();
     }
 
     return{

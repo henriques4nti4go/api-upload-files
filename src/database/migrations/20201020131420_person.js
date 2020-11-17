@@ -11,7 +11,7 @@ exports.up = function(knex) {
         table.text('profile_photo');
         table.integer('user_id').notNullable();
         table.foreign('user_id').references('id').inTable('users');
-        table.timestamps();
+        table.timestamps(true,true);
     });
 };
 
