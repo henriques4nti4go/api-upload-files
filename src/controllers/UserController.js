@@ -4,13 +4,13 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const authKey = require('../config/auth.json');
 const Token = require('../auth/token');
+const getDate = require('../helpers/date');
 
 function functions() {
     const register = async function (request, response) {
         const trx = await connection.transaction();
 
         try {
-        
             const {
                 name, 
                 login, 
@@ -19,7 +19,8 @@ function functions() {
                 genre
             } = request.body;
 
-            let date = new Date().toLocaleString();
+            let date = getDate;
+            
             let isUser = await verifyUser(login);
             
             if (isUser.status) 
@@ -91,9 +92,9 @@ function functions() {
                 token,
             } = request.body;
 
+            let date = getDate;
             let auth = require('../config/auth.json');
-            
-            var decoded = jwt.verify(token,auth.SECRET_KEY);
+            let decoded = jwt.verify(token,auth.SECRET_KEY);
             
             if (password !== decoded.password) {
                 return response.json({
@@ -114,6 +115,7 @@ function functions() {
                 state: state? state : person.state,
                 country: country ? country : person.country,
                 profile_photo: profile_photo ? profile_photo : person.profile_photo,
+                updated_at: date,
             })
 
             // password_crypt = await bcrypt.hash(password, 10);
@@ -132,11 +134,20 @@ function functions() {
         }
     }
 
+    const setProfileImage = async function (request, response) {
+        let {
+            user_id,
+        } = request.body;
 
+        await connection('persons')
+        .update()
+
+    }
 
     return{
         register,
         updateProfile,
+        setProfileImage,
         // index,
         // auth,
         // authenticateWithToken,

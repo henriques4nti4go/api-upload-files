@@ -3,12 +3,13 @@ const crypto = require('crypto');
 // const connection = require('./database/connection.js');
 const users = require('./controllers/UserController');
 const message = require('./controllers/MessageController');
-const media = require('./controllers/MediaController');
+const media = require('./controllers/MediaFilesController');
 const auth = require('./controllers/AuthController');
 const route = express.Router();
 const jwt  = require('jsonwebtoken');
 const authKey = require('./config/auth.json');
 const multer = require('multer');
+
 
 const multerConfig = require('./config/multer');
 
@@ -66,12 +67,12 @@ route.post('/api/user/register', users.register);
  * message: String
  */
 
-
 route.use(auth.authenticateWithToken);
 route.post('/api/user/updateProfile', users.updateProfile);
-
 route.post('/api/user/uploadPhotos',multer(multerConfig).single('image'), media.uploadPhotos);
-route.post('/api/user/getMedia', media.getMedia);
+route.post('/api/user/getMediaFiles', media.getMediaFiles);
+route.post('/api/user/deleteMediaFiles', media.deleteMediaFiles);
+route.post('/api/user/setProfileImage', users.setProfileImage);
 
 
 

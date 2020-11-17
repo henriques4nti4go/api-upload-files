@@ -1,9 +1,10 @@
 
 exports.up = function(knex) {
-    return knex.schema.createTable('images', function (table) {
+    return knex.schema.createTable('media_files', function (table) {
         table.increments();
         table.integer('user_id').notNullable();
-        table.string('image_uri').notNullable();
+        table.string('uri').notNullable();
+        table.string('key').notNullable();
         table.foreign('user_id').references('id').inTable('users');
         table.timestamps();
     });
@@ -11,5 +12,5 @@ exports.up = function(knex) {
 
 exports.down = function(knex) {
     return knex.schema
-    .dropTable('images');
+    .dropTable('media_files');
 };

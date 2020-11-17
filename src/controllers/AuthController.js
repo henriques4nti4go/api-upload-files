@@ -8,10 +8,9 @@ const connection = require('../database/connection');
 function functions() {
     const authenticateWithToken = async function (request, response, next) {
         try {
-            const {
-                token,
-            } = request.body;
-    
+            const req = request.headers;
+            const token = req['auth-token'];
+            
             if (!token) {
                 return response.json({
                     message: 'you need to authenticate',
