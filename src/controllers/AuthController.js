@@ -8,16 +8,17 @@ const connection = require('../database/connection');
 function functions() {
     const authenticateWithToken = async function (request, response, next) {
         try {
+            const req = request.headers;
+            const token = req['auth-token'];
             const {
-                token,
                 user_id,
             } = request.body;
-    
             if (!token) {
                 return response.json({
                     message: 'you need to authenticate',
                 });
             }
+            
             let auth = jwt.verify(token,authKey.SECRET_KEY);
             
             if (auth.id !== user_id) {

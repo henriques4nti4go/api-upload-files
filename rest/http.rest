@@ -54,3 +54,12 @@ Content-Type: application/json
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibG9naW4iOiJwYXVsbzIiLCJwYXNzd29yZCI6IiQyYSQxMCRsd1p6Mm9WSFd4ZXQ0YTNzSnFoYml1a1dHN0FDNHFxc2FMbC5jcTJ6dVguN2NEZ2psOERuRyIsImlhdCI6MTYwNTYxNTMxOH0.mE4eHAzkYZouBV7n-E0F2ssmI1lmIe8qS3-guYgkz-w",
     "user_id": 2
 }
+#####
+POST  http://localhost:3333/api/user/searchUser
+Content-Type: application/json
+auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibG9naW4iOiJwYXVsbzIiLCJwYXNzd29yZCI6IiQyYSQxMCRsd1p6Mm9WSFd4ZXQ0YTNzSnFoYml1a1dHN0FDNHFxc2FMbC5jcTJ6dVguN2NEZ2psOERuRyIsImlhdCI6MTYwNTYxNTMxOH0.mE4eHAzkYZouBV7n-E0F2ssmI1lmIe8qS3-guYgkz-w
+
+{
+    "user_id": 2,
+    "user_name": "pa"
+}

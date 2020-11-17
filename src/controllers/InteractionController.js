@@ -1,5 +1,6 @@
 const connection = require('../database/connection');
 require('dotenv').config();
+const Friends = require('../database/Models/Friends');
 
 function functions() {
     const sendFriendSolicitation = async function (request, response) {
