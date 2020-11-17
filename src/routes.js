@@ -5,6 +5,7 @@ const users = require('./controllers/UserController');
 const message = require('./controllers/MessageController');
 const media = require('./controllers/MediaController');
 const auth = require('./controllers/AuthController');
+const friends = require('./controllers/InteractionController');
 const route = express.Router();
 const jwt  = require('jsonwebtoken');
 const authKey = require('./config/auth.json');
@@ -39,12 +40,14 @@ route.post('/api/auth/login', auth.login);
  * login: String Required
  * password: String Required
  * date_of_birth: Date Required
- * 
+ * genre: Integer Required
  * @return
  * status: String
  * message: String
  */
 route.post('/api/user/register', users.register);
+
+route.use(auth.authenticateWithToken);
 
 /**
  * @profile_edit
@@ -65,10 +68,13 @@ route.post('/api/user/register', users.register);
  * status: Boolean
  * message: String
  */
-
-
-route.use(auth.authenticateWithToken);
 route.post('/api/user/updateProfile', users.updateProfile);
+
+route.post('/api/user/friends/sendSolicitation', friends.sendFriendSolicitation);
+route.post('/api/user/friends/getSolicitation', friends.getFriendSolicitation);
+route.post('/api/user/friends/responseSolicitation', friends.responseFriendSolicitation);
+route.post('/api/user/friends', friends.getFriends);
+
 
 route.post('/api/user/uploadPhotos',multer(multerConfig).single('image'), media.uploadPhotos);
 route.post('/api/user/getMedia', media.getMedia);

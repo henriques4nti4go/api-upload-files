@@ -1,0 +1,55 @@
+POST http://localhost:3333/api/auth/login
+Content-Type: application/json
+
+{
+    "login": "paulo",
+    "password": 12345678
+}
+#####
+POST http://localhost:3333/api/user/register
+Content-Type: application/json
+
+{
+    "name": "paulo",
+    "login": "paulo2",
+    "password": "123456789",
+    "date_of_birth": "1996-08-23",
+    "genre": 1
+}
+
+#####
+POST  http://localhost:3333/api/user/friends/sendSolicitation
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6InBhdWxvIiwicGFzc3dvcmQiOiIkMmEkMTAkb1lIaW1GRi5wMG4xTUdKOExpY3UzT2xFaFNBNlh1ZzZPYVZyTWNGM2pVYjVUTTZJZlhxaHkiLCJpYXQiOjE2MDU1NzI2ODZ9.HlEX8ISbgUsfbwjON9FhbnTZTrpQzEh4auF_Gq1q1cc",
+    "user_id": 6,
+    "solicitation_user_id": 5
+}
+#####
+POST  http://localhost:3333/api/user/friends/getSolicitation
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6InBhdWxvIiwicGFzc3dvcmQiOiIkMmEkMTAkb1lIaW1GRi5wMG4xTUdKOExpY3UzT2xFaFNBNlh1ZzZPYVZyTWNGM2pVYjVUTTZJZlhxaHkiLCJpYXQiOjE2MDU1NzI2ODZ9.HlEX8ISbgUsfbwjON9FhbnTZTrpQzEh4auF_Gq1q1cc",
+    "user_id": 6
+}
+
+#####
+POST  http://localhost:3333/api/user/friends/responseSolicitation
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6InBhdWxvIiwicGFzc3dvcmQiOiIkMmEkMTAkb1lIaW1GRi5wMG4xTUdKOExpY3UzT2xFaFNBNlh1ZzZPYVZyTWNGM2pVYjVUTTZJZlhxaHkiLCJpYXQiOjE2MDU1NzI2ODZ9.HlEX8ISbgUsfbwjON9FhbnTZTrpQzEh4auF_Gq1q1cc",
+    "user_id": 6,
+    "solicitation_id": 1,
+    "response": 1
+}
+#####
+POST  http://localhost:3333/api/user/friends/
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6InBhdWxvIiwicGFzc3dvcmQiOiIkMmEkMTAkb1lIaW1GRi5wMG4xTUdKOExpY3UzT2xFaFNBNlh1ZzZPYVZyTWNGM2pVYjVUTTZJZlhxaHkiLCJpYXQiOjE2MDU1NzI2ODZ9.HlEX8ISbgUsfbwjON9FhbnTZTrpQzEh4auF_Gq1q1cc",
+    "user_id": 6
+}
