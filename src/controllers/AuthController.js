@@ -13,6 +13,7 @@ function functions() {
             const {
                 user_id,
             } = request.body;
+            
             if (!token) {
                 return response.json({
                     message: 'you need to authenticate',

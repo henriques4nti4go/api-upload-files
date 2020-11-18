@@ -1,19 +1,19 @@
 const connection = require('../connection');
 const { Model } = require('objection');
-const MediaFiles = require('./MediaFiles');
+const Person = require('./Person');
 
 Model.knex(connection);
 
 class Index extends Model {
-    static tableName = 'posts';
+    static tableName = 'users';
 
     static relationMappings = {
-        media: {
+        person_data: {
           relation: Model.BelongsToOneRelation,
-          modelClass: MediaFiles,
+          modelClass: Person,
           join: {
-            from: 'posts.media_id',
-            to: 'media_files.id',
+            from: 'users.id',
+            to: 'persons.user_id',
           }
         }
     };

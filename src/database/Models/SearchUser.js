@@ -1,11 +1,5 @@
-const connection = require('../connection');
-const { Model } = require('objection');
-const MediaFiles = require('./MediaFiles');
-
-Model.knex(connection);
-
-class Index extends Model {
-    static tableName = 'posts';
+class Post extends Model {
+    static tableName = '';
 
     static relationMappings = {
         media: {
@@ -18,5 +12,3 @@ class Index extends Model {
         }
     };
 }
-
-module.exports = Index;

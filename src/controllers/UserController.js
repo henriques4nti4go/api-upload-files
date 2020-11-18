@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const authKey = require('../config/auth.json');
 const Token = require('../auth/token');
 const getDate = require('../helpers/date');
+const User = require('../database/Models/User');
 
 function functions() {
     const register = async function (request, response) {
@@ -142,16 +143,19 @@ function functions() {
     }
 
     const searchUser = async function (request, response) {
-        
-
         try {
         
             const {
                 user_name, 
             } = request.body;
 
-            let {rows} = await connection.raw(`select * from persons where name like '${user_name}%'`);
+            let rows = [];
             
+            if (user_name) {
+            let response = await connection.raw(`select * from persons where name like '${user_name}%'`);
+             rows = response.rows;
+            }
+
             return response.json({
                 status: 'SUCCESS',
                 message: 'users search!',

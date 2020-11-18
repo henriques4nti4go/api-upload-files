@@ -78,7 +78,20 @@ route.post('/api/user/friends/getSolicitation', friends.getFriendSolicitation);
 route.post('/api/user/friends/responseSolicitation', friends.responseFriendSolicitation);
 route.post('/api/user/friends', friends.getFriends);
 
-route.post('/api/user/searchUser', users.searchUser);
+/**
+ * @search_user
+ * 
+ * @params
+ * token: String Required
+ * user_id: integer Required
+ * user_name: String Required
+ * 
+ * @return
+ * status: Boolean
+ * message: String
+ */
+
+route.post('/api/user/search/user', users.searchUser);
 
 route.post('/api/user/uploadPhotos',multer(multerConfig).single('image'), media.uploadPhotos);
 route.post('/api/user/getMediaFiles', media.getMediaFiles);
