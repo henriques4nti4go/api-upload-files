@@ -135,12 +135,42 @@ function functions() {
             })
         }
     }
+
+    const hasSendFriendSolicitation = async function (request, response) {
+        
+        try {
+            const {
+                user_id,
+                solicitation_user_id,
+            } = request.body;
+            
+
+            const friends = await connection('friendSolicitations')
+            .where({user_id})
+            .where({solicitation_user_id: solicitation_user_id})
+            .first('id');
+            console.log(friends)
+            return response.json({
+                status: 'SUCCESS',
+                message: 'your friends!',
+                response: friends,
+            })
+        } catch (error) {
+            console.log(error);
+            response.json({
+                status: 'ERROR',
+                message: 'on erro has ocurred',
+                error,
+            })
+        }
+    }
     
     return {
         sendFriendSolicitation,
         getFriendSolicitation,
         responseFriendSolicitation,
-        getFriends
+        getFriends,
+        hasSendFriendSolicitation
     }
 }
 

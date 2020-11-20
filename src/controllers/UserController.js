@@ -146,15 +146,22 @@ function functions() {
         try {
         
             const {
+                user_id,
                 user_name, 
             } = request.body;
 
             let rows = [];
             
-            if (user_name) {
-            let response = await connection.raw(`select * from persons where name like '${user_name}%'`);
-             rows = response.rows;
-            }
+            // if (user_name) {
+            // let response = await connection.raw(`select * from persons where name like '${user_name}%'`);
+            //  rows = response.rows;
+            // }
+            rows = await connection('persons')
+            .innerJoin('users','user_id','=','users.id')
+            .where('user_id','<>',user_id)
+            .whereRaw(`name like '${user_name}%'`)
+            .select('users.login','persons.*');
+            
 
             return response.json({
                 status: 'SUCCESS',
@@ -168,11 +175,37 @@ function functions() {
         }
     }
 
+    const getProfile = async function (request, response) {
+        try {
+        
+            const {
+                user_target, 
+            } = request.body;
+            
+            let data = await connection('persons')
+            .innerJoin('users','user_id','=','users.id')
+            .where({user_id: user_target})         
+            .first('users.login','persons.*');
+            
+            return response.json({
+                status: 'SUCCESS',
+                message: 'profile user!',
+                response: data,
+            });
+
+        } catch (error) {
+            console.log(error)
+            return response.json({status: 'ERROR', message: error});
+        }
+    }
+
+
     return{
         register,
         updateProfile,
         setProfileImage,
-        searchUser
+        searchUser,
+        getProfile,
         // index,
         // auth,
         // authenticateWithToken,

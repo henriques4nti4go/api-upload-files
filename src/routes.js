@@ -76,6 +76,7 @@ route.post('/api/user/updateProfile', users.updateProfile);
 route.post('/api/user/friends/sendSolicitation', friends.sendFriendSolicitation);
 route.post('/api/user/friends/getSolicitation', friends.getFriendSolicitation);
 route.post('/api/user/friends/responseSolicitation', friends.responseFriendSolicitation);
+route.post('/api/user/friends/hasSolicitation', friends.hasSendFriendSolicitation);
 route.post('/api/user/friends', friends.getFriends);
 
 /**
@@ -87,11 +88,33 @@ route.post('/api/user/friends', friends.getFriends);
  * user_name: String Required
  * 
  * @return
- * status: Boolean
+ * status: String
  * message: String
+ * response: Object
  */
 
 route.post('/api/user/search/user', users.searchUser);
+
+
+/**
+ * @get_profile
+ * 
+ * @method 
+ * POST
+ * @params
+ * token: String Required
+ * user_id: integer Required
+ * user_target: Integer String
+ * 
+ * @return
+ * status: String
+ * message: String
+ * response: Object
+ */
+
+route.post('/api/user/profile/get', users.getProfile);
+
+
 
 route.post('/api/user/uploadPhotos',multer(multerConfig).single('image'), media.uploadPhotos);
 route.post('/api/user/getMediaFiles', media.getMediaFiles);
