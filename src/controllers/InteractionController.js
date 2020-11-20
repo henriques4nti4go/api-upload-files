@@ -1,3 +1,4 @@
+const { where } = require('../database/connection');
 const connection = require('../database/connection');
 require('dotenv').config();
 const Friends = require('../database/Models/Friends');
@@ -34,6 +35,40 @@ function functions() {
                 error,
             })
         }
+    }
+
+    const cancelFriendSolicitation = async function (request, response) {
+            try {
+                const {
+                    user_id,
+                    solicitation_user_id,
+                } = request.body;
+                let solicitation = await connection('friendSolicitations')
+                .where({solicitation_user_id,user_id}).first('id');
+    
+                if (solicitation) return response.json({
+                    status: 'ERROR',
+                    message: 'you already sent a solicitation'
+                });
+    
+                await connection('friendSolicitations')
+                .where({status: 1})
+                .delete({
+                    user_id,
+                    solicitation_user_id,
+                });
+    
+                return response.json({
+                    status: 'SUCCESS',
+                    message: 'solicitation canceled!'
+                })
+            } catch (error) {
+                response.json({
+                    status: 'ERROR',
+                    message: 'on erro has ocurred',
+                    error,
+                })
+            }
     }
 
     const getFriendSolicitation = async function (request, response) {
@@ -148,12 +183,43 @@ function functions() {
             const friends = await connection('friendSolicitations')
             .where({user_id})
             .where({solicitation_user_id: solicitation_user_id})
+            .where({status: 1})
             .first('id');
-            console.log(friends)
+            
             return response.json({
                 status: 'SUCCESS',
                 message: 'your friends!',
                 response: friends,
+            })
+        } catch (error) {
+            console.log(error);
+            response.json({
+                status: 'ERROR',
+                message: 'on erro has ocurred',
+                error,
+            })
+        }
+    }
+
+    const areFriends = async function (request, response) {
+        
+        try {
+            const {
+                user_id,
+                solicitation_user_id,
+            } = request.body;
+            
+            const friends = await connection('friends')
+            .where({user_id})
+            .where({friend_id: solicitation_user_id})
+            .first('id');
+
+            let data = friends.id? true : false;
+
+            return response.json({
+                status: 'SUCCESS',
+                message: 'your friends!',
+                response: data,
             })
         } catch (error) {
             console.log(error);
@@ -170,7 +236,9 @@ function functions() {
         getFriendSolicitation,
         responseFriendSolicitation,
         getFriends,
-        hasSendFriendSolicitation
+        hasSendFriendSolicitation,
+        areFriends,
+        cancelFriendSolicitation
     }
 }
 

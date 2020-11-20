@@ -74,10 +74,30 @@ route.post('/api/user/updateProfile', users.updateProfile);
 route.use(auth.authenticateWithToken);
 route.post('/api/user/updateProfile', users.updateProfile);
 route.post('/api/user/friends/sendSolicitation', friends.sendFriendSolicitation);
+route.post('/api/user/friends/cancelSolicitation', friends.cancelFriendSolicitation);
 route.post('/api/user/friends/getSolicitation', friends.getFriendSolicitation);
 route.post('/api/user/friends/responseSolicitation', friends.responseFriendSolicitation);
 route.post('/api/user/friends/hasSolicitation', friends.hasSendFriendSolicitation);
 route.post('/api/user/friends', friends.getFriends);
+
+/**
+ * @are_friends
+ * 
+ * @method
+ * POST
+ * 
+ * @params
+ * token: String Required
+ * user_id: integer Required
+ * solicitation_user_id: Integer Required
+ * 
+ * @return
+ * status: String
+ * message: String
+ * response: Boolean
+ */
+
+route.post('/api/user/friends/areFriends', friends.areFriends);
 
 /**
  * @search_user
