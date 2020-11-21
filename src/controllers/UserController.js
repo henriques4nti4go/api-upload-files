@@ -161,7 +161,6 @@ function functions() {
             .where('user_id','<>',user_id)
             .whereRaw(`name like '${user_name}%'`)
             .select('users.login','persons.*');
-            
 
             return response.json({
                 status: 'SUCCESS',

@@ -79,6 +79,7 @@ route.post('/api/user/friends/getSolicitation', friends.getFriendSolicitation);
 route.post('/api/user/friends/responseSolicitation', friends.responseFriendSolicitation);
 route.post('/api/user/friends/hasSolicitation', friends.hasSendFriendSolicitation);
 route.post('/api/user/friends', friends.getFriends);
+route.post('/api/user/friends/cancelFriendship', friends.cancelFriendship);
 
 /**
  * @are_friends

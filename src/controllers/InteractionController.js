@@ -13,7 +13,7 @@ function functions() {
             } = request.body;
             let solicitation = await connection('friendSolicitations')
             .where({solicitation_user_id,user_id}).first('id');
-
+            
             if (solicitation) return response.json({
                 status: 'ERROR',
                 message: 'you already sent a solicitation'
@@ -26,7 +26,7 @@ function functions() {
 
             return response.json({
                 status: 'SUCCESS',
-                message: 'solicitation send!'
+                message: 'solicitation send!',
             })
         } catch (error) {
             response.json({
@@ -43,21 +43,13 @@ function functions() {
                     user_id,
                     solicitation_user_id,
                 } = request.body;
-                let solicitation = await connection('friendSolicitations')
-                .where({solicitation_user_id,user_id}).first('id');
-    
-                if (solicitation) return response.json({
-                    status: 'ERROR',
-                    message: 'you already sent a solicitation'
-                });
-    
+                
                 await connection('friendSolicitations')
-                .where({status: 1})
                 .delete({
                     user_id,
                     solicitation_user_id,
                 });
-    
+                
                 return response.json({
                     status: 'SUCCESS',
                     message: 'solicitation canceled!'
@@ -79,7 +71,7 @@ function functions() {
             } = request.body;
 
             const solicitations = await connection('friendSolicitations')
-            .where({solicitation_user_id: user_id, status: 1})
+            .where({solicitation_user_id: user_id})
             .select('*');
 
             return response.json({
@@ -106,26 +98,28 @@ function functions() {
                 solicitation_response,
             } = request.body;
 
-            let solicitation = await connection('friendSolicitations')
+            let solicitation = await trx('friendSolicitations')
             .where({
                 id: solicitation_id,
-                status: 1,
             })
-            .update({status: 0})
-            .returning('*');
+            .first('*');
 
             if (solicitation_response) {
-                if (solicitation[0].id) {
+                if (solicitation.id) {
                     await trx('friends').insert({
-                        user_id: solicitation[0].user_id,
-                        friend_id: solicitation[0].solicitation_user_id,
+                        user_id: solicitation.user_id,
+                        friend_id: solicitation.solicitation_user_id,
                     });
                     await trx('friends').insert({
-                        user_id: solicitation[0].solicitation_user_id,
-                        friend_id: solicitation[0].user_id,
+                        user_id: solicitation.solicitation_user_id,
+                        friend_id: solicitation.user_id,
                     });
                 }
             }
+
+            await trx('friendSolicitation')
+            .where({id: solicitation.id})
+            .delete();
 
             trx.commit();
             
@@ -178,18 +172,57 @@ function functions() {
                 user_id,
                 solicitation_user_id,
             } = request.body;
-            
 
-            const friends = await connection('friendSolicitations')
+            let response_solicitation = 'HAVE_SOLICITATION';
+
+            // verificon se há solicitacao
+            let friends = await connection('friendSolicitations')
             .where({user_id})
             .where({solicitation_user_id: solicitation_user_id})
-            .where({status: 1})
             .first('id');
-            
+            if (!friends) response_solicitation = 'NO_HAVE_SOLICITATION';
+            //não retornando algo, eu inverto os valores para ver se há solicitacao
+            if (!friends) {
+                friends = await connection('friendSolicitations')
+                .where({user_id: solicitation_user_id})
+                .where({solicitation_user_id: user_id})
+                .first('id');
+                // se achar algo invertendo so valores quer dizer que aquele usuario tem uma solicitacao para responder
+                if (friends) response_solicitation = 'RESPONSE_SOLICITATION'; 
+            }
+
             return response.json({
                 status: 'SUCCESS',
-                message: 'your friends!',
-                response: friends,
+                message: 'you !',
+                response: response_solicitation,
+            })
+        } catch (error) {
+            console.log(error);
+            response.json({
+                status: 'ERROR',
+                message: 'on erro has ocurred',
+                error,
+            })
+        }
+    }
+
+    const cancelFriendship = async function (request, response) {
+        
+        try {
+            const {
+                user_id,
+                friend_id,
+            } = request.body;
+            
+            // const friends = await connection('friends')
+            // .where({user_id})
+            // .where({friend_id: friend_id})
+            // .update({status: 0})
+
+            return response.json({
+                status: 'SUCCESS',
+                message: 'friendship canceled!',
+                // response: ,
             })
         } catch (error) {
             console.log(error);
@@ -211,10 +244,11 @@ function functions() {
             
             const friends = await connection('friends')
             .where({user_id})
+            .where({status: 1})
             .where({friend_id: solicitation_user_id})
             .first('id');
 
-            let data = friends.id? true : false;
+            let data = friends? true : false;
 
             return response.json({
                 status: 'SUCCESS',
@@ -238,7 +272,8 @@ function functions() {
         getFriends,
         hasSendFriendSolicitation,
         areFriends,
-        cancelFriendSolicitation
+        cancelFriendSolicitation,
+        cancelFriendship
     }
 }
 
