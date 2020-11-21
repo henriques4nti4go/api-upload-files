@@ -97,7 +97,7 @@ function functions() {
                 user_id,
                 solicitation_response,
             } = request.body;
-
+            
             let solicitation = await trx('friendSolicitations')
             .where({
                 id: solicitation_id,
@@ -117,7 +117,7 @@ function functions() {
                 }
             }
 
-            await trx('friendSolicitation')
+            let a = await trx('friendSolicitations')
             .where({id: solicitation.id})
             .delete();
 
@@ -128,7 +128,7 @@ function functions() {
                 message: 'solicitation response!'
             })
         } catch (error) {
-            console.log(error)
+            console.log(error);
             trx.rollback();
             response.json({
                 status: 'ERROR',
@@ -192,9 +192,9 @@ function functions() {
             }
 
             return response.json({
-                status: 'SUCCESS',
-                message: 'you !',
-                response: response_solicitation,
+                status: response_solicitation,
+                message: 'you have a solicitation',
+                response: friends,
             })
         } catch (error) {
             console.log(error);
@@ -214,10 +214,15 @@ function functions() {
                 friend_id,
             } = request.body;
             
-            // const friends = await connection('friends')
-            // .where({user_id})
-            // .where({friend_id: friend_id})
-            // .update({status: 0})
+            await connection('friends')
+            .where({user_id})
+            .where({friend_id: friend_id})
+            .delete();
+
+            const friends = await connection('friends')
+            .where({user_id: friend_id})
+            .where({friend_id: user_id})
+            .delete();
 
             return response.json({
                 status: 'SUCCESS',
