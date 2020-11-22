@@ -159,7 +159,8 @@ function functions() {
             .select('*');
             friends = await Friend.query()
             .where({user_id})
-            .withGraphFetched('user(select)');
+            .withGraphFetched('user(select)')
+            .withGraphFetched('person');
             
             return response.json({
                 status: 'SUCCESS',
