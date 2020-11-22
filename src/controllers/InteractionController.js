@@ -2,6 +2,7 @@ const { where } = require('../database/connection');
 const connection = require('../database/connection');
 require('dotenv').config();
 const Friends = require('../database/Models/Friends');
+const FriendSolicitation = require('../database/Models/FriendSolicitation');
 
 function functions() {
     const sendFriendSolicitation = async function (request, response) {
@@ -70,9 +71,10 @@ function functions() {
                 user_id,
             } = request.body;
 
-            const solicitations = await connection('friendSolicitations')
-            .where({solicitation_user_id: user_id})
-            .select('*');
+            
+            const solicitations = await FriendSolicitation.query()
+            .withGraphFetched('user')
+            .withGraphFetched('person');
 
             return response.json({
                 status: 'SUCCESS',
@@ -80,6 +82,7 @@ function functions() {
                 response: solicitations,
             })
         } catch (error) {
+            console.log(error)
             response.json({
                 status: 'ERROR',
                 message: 'on erro has ocurred',
@@ -145,11 +148,10 @@ function functions() {
                 user_id,
             } = request.body;
             
-
             const friends = await connection('friends')
             .where({user_id})
             .select('*');
-
+            
             return response.json({
                 status: 'SUCCESS',
                 message: 'your friends!',
@@ -172,7 +174,6 @@ function functions() {
                 user_id,
                 solicitation_user_id,
             } = request.body;
-
             let response_solicitation = 'HAVE_SOLICITATION';
 
             // verificon se há solicitacao
