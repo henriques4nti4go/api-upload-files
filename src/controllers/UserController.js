@@ -152,16 +152,13 @@ function functions() {
 
             let rows = [];
             
-            // if (user_name) {
-            // let response = await connection.raw(`select * from persons where name like '${user_name}%'`);
-            //  rows = response.rows;
-            // }
-            rows = await connection('persons')
-            .innerJoin('users','user_id','=','users.id')
-            .where('user_id','<>',user_id)
-            .whereRaw(`name like '${user_name}%'`)
-            .select('users.login','persons.*');
-
+            if (user_name) {
+                rows = await connection('persons')
+                .innerJoin('users','user_id','=','users.id')
+                .where('user_id','<>',user_id)
+                .whereRaw(`name like '${user_name}%'`)
+                .select('users.login','persons.*');
+            }
             return response.json({
                 status: 'SUCCESS',
                 message: 'users search!',

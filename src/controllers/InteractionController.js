@@ -1,7 +1,7 @@
 const { where } = require('../database/connection');
 const connection = require('../database/connection');
 require('dotenv').config();
-const Friends = require('../database/Models/Friends');
+const Friend = require('../database/Models/Friend');
 const FriendSolicitation = require('../database/Models/FriendSolicitation');
 
 function functions() {
@@ -71,11 +71,11 @@ function functions() {
                 user_id,
             } = request.body;
 
-            
             const solicitations = await FriendSolicitation.query()
+            .where({solicitation_user_id: user_id})
             .withGraphFetched('user')
             .withGraphFetched('person');
-
+            console.log(solicitations)
             return response.json({
                 status: 'SUCCESS',
                 message: '',
@@ -106,9 +106,14 @@ function functions() {
                 id: solicitation_id,
             })
             .first('*');
-
+            let friendship = await trx('friends')
+            .where({
+                user_id: solicitation.user_id,
+                friend_id: solicitation.solicitation_user_id,
+            })
+            .first('id');
             if (solicitation_response) {
-                if (solicitation.id) {
+                if (solicitation.id && !friendship) {
                     await trx('friends').insert({
                         user_id: solicitation.user_id,
                         friend_id: solicitation.solicitation_user_id,
@@ -148,9 +153,13 @@ function functions() {
                 user_id,
             } = request.body;
             
-            const friends = await connection('friends')
+       
+            let friends = await connection('friends')
             .where({user_id})
             .select('*');
+            friends = await Friend.query()
+            .where({user_id})
+            .withGraphFetched('user(select)');
             
             return response.json({
                 status: 'SUCCESS',
