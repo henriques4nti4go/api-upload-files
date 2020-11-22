@@ -125,7 +125,7 @@ function functions() {
                 }
             }
 
-            let a = await trx('friendSolicitations')
+            await trx('friendSolicitations')
             .where({id: solicitation.id})
             .delete();
 
@@ -154,14 +154,11 @@ function functions() {
             } = request.body;
             
        
-            let friends = await connection('friends')
-            .where({user_id})
-            .select('*');
             friends = await Friend.query()
             .where({user_id})
             .withGraphFetched('user(select)')
             .withGraphFetched('person');
-            
+            console.log(friends)
             return response.json({
                 status: 'SUCCESS',
                 message: 'your friends!',
