@@ -4,6 +4,7 @@ exports.up = function(knex) {
         table.increments();
         table.text('message').notNullable();
         table.integer('user_id').notNullable();
+        table.integer('user_target').notNullable();
         table.foreign('user_id').references('id').inTable('users');
         table.integer('status').notNullable().defaultTo(1);
         table.timestamps(true,true);

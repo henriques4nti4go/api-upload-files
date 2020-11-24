@@ -158,7 +158,7 @@ function functions() {
             .where({user_id})
             .withGraphFetched('user(select)')
             .withGraphFetched('person');
-            console.log(friends)
+            
             return response.json({
                 status: 'SUCCESS',
                 message: 'your friends!',

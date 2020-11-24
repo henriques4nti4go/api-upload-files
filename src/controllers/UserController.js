@@ -6,6 +6,7 @@ const authKey = require('../config/auth.json');
 const Token = require('../auth/token');
 const getDate = require('../helpers/date');
 const User = require('../database/Models/User');
+const Person = require('../database/Models/Person');
 
 function functions() {
     const register = async function (request, response) {
@@ -178,15 +179,21 @@ function functions() {
                 user_target, 
             } = request.body;
             
-            let data = await connection('persons')
-            .innerJoin('users','user_id','=','users.id')
-            .where({user_id: user_target})         
-            .first('users.login','persons.*');
+            // let data = await connection('persons')
+            // .innerJoin('users','user_id','=','users.id')
+            // .where({user_id: user_target})         
+            // .first('users.login','persons.*');
+            
+            let data = await Person.query()
+            .select('persons.*', 'users.login')
+            .innerJoin('users', 'user_id', 'users.id')
+            .where({user_id: user_target})
+            .withGraphFetched('conversation_id(select)');
             
             return response.json({
                 status: 'SUCCESS',
                 message: 'profile user!',
-                response: data,
+                response: data[0],
             });
 
         } catch (error) {
