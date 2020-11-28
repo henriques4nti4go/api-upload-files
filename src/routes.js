@@ -136,6 +136,7 @@ route.post('/api/user/search/user', users.searchUser);
 route.post('/api/user/profile/get', users.getProfile);
 
 route.post('/api/user/messages/send', message.sendMessage);
+route.post('/api/user/messages/get', message.getMessages);
 
 
 route.post('/api/user/uploadPhotos',multer(multerConfig).single('image'), media.uploadPhotos);

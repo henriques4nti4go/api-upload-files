@@ -74,6 +74,7 @@ function functions() {
             });
             
             return response.json({
+                status: 'SUCCESS',
                 user: table,
                 token,
                 state: true,
@@ -84,7 +85,8 @@ function functions() {
             return response.json({
                 message: 'an error has occurred',
                 error,
-                state: false
+                state: false,
+                status: 'ERROR',
             })
         }
     }

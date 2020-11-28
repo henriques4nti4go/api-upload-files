@@ -21,13 +21,12 @@ function functions() {
                 genre
             } = request.body;
 
-            let date = getDate;
             
             let isUser = await verifyUser(login);
             
             if (isUser.status) 
                 return response.json({
-                    status: '200',
+                    status: 'ERROR',
                     message: 'user already exists',
                 });
 
@@ -47,14 +46,14 @@ function functions() {
 
             trx.commit();
             return response.json({
-                status: true,
-                message: 'created',
+                status: 'SUCCESS',
+                message: 'user created',
             });
 
         } catch (error) {
             trx.rollback();
             console.log(error);
-            return response.json({status: 'error', message: error});
+            return response.json({status: 'ERROR', message: error});
         }
     }
     
