@@ -4,6 +4,7 @@ exports.up = function(knex) {
         table.increments();
         table.string('login').notNullable();
         table.string('password').notNullable();
+        table.string('notification_token');
         table.integer('status').notNullable().defaultTo(1);
         table.timestamps(true,true);
     });

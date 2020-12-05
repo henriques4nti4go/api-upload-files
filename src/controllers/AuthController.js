@@ -45,6 +45,7 @@ function functions() {
             const {
                 login,
                 password,
+                notification_token,
             } = request.body;
 
             let table = await connection('users').where({login}).first('id', 'login', 'password');
@@ -65,7 +66,11 @@ function functions() {
                 })
             }
 
-            
+            if (notification_token) {
+                await connection('users')
+                .where({login})
+                .update({notification_token});
+            }
 
             let token = await Token.generate({
                 id: table.id,

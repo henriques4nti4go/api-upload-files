@@ -72,3 +72,29 @@ auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibG9naW4iOiJwYXVsbzI
     "user_id": 2,
     "user_name": "pa"
 }
+
+#####
+GET http://localhost:3333/
+Content-Type: application/json
+auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibG9naW4iOiJwYXVsbzIiLCJwYXNzd29yZCI6IiQyYSQxMCRsd1p6Mm9WSFd4ZXQ0YTNzSnFoYml1a1dHN0FDNHFxc2FMbC5jcTJ6dVguN2NEZ2psOERuRyIsImlhdCI6MTYwNTYxNTMxOH0.mE4eHAzkYZouBV7n-E0F2ssmI1lmIe8qS3-guYgkz-w
+
+{
+    "user_id": 2,
+    "user_name": "pa"
+}
+
+######
+POST  https://fcm.googleapis.com/fcm/send
+Content-Type: application/json
+Authorization: key=BOPrkm71ZlDuebKu4U6y7NmSovqZoxHjAMGnsKXEIlYSzIqfJmyrjsQHxootwyLaDbQwQthHtCQvd1P_XfalWVs
+
+{
+    "to": "ExponentPushToken[nhI0eZJXlbLGzRMDtUySBA]",
+    "priority": "normal",
+    "data": {
+        "experienceId": "@k4sh4/app",
+        "title": "\uD83D\uDCE7 You've got mail",
+        "message": "Hello world! \uD83C\uDF10"
+    }
+}
+

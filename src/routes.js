@@ -10,14 +10,32 @@ const route = express.Router();
 const jwt  = require('jsonwebtoken');
 const authKey = require('./config/auth.json');
 const multer = require('multer');
-
+const { Expo } = require('expo-server-sdk');
+const Axios = require('axios').default;
 
 const multerConfig = require('./config/multer');
 
-route.get('/', (req, res) => {
-    return res.json({message: 'ok'})
+route.get('/', async (req, res) => {
+   
+    console.log('ok')
 });
 
+
+async function sendNotification(params) {
+    try {
+        
+    
+    let expo = new Expo();
+    await expo.sendPushNotificationsAsync([{
+        to: 'ExponentPushToken[nhI0eZJXlbLGzRMDtUySBA]',
+        sound: 'default',
+        body: 'This is a test notification',
+        data: { withSome: 'data' },
+    }]);
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 /**
  * @login
@@ -137,6 +155,7 @@ route.post('/api/user/profile/get', users.getProfile);
 
 route.post('/api/user/messages/send', message.sendMessage);
 route.post('/api/user/messages/get', message.getMessages);
+route.post('/api/user/messages/getConversations', message.getConversations);
 
 
 route.post('/api/user/uploadPhotos',multer(multerConfig).single('image'), media.uploadPhotos);

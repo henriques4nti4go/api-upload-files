@@ -75,7 +75,7 @@ function functions() {
             .where({solicitation_user_id: user_id})
             .withGraphFetched('user')
             .withGraphFetched('person');
-            console.log(solicitations)
+            // console.log(solicitations)
             return response.json({
                 status: 'SUCCESS',
                 message: '',

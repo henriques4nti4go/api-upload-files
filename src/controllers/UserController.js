@@ -18,7 +18,8 @@ function functions() {
                 login, 
                 date_of_birth,
                 password,
-                genre
+                genre,
+                notification_token,
             } = request.body;
 
             
@@ -35,6 +36,7 @@ function functions() {
             let table = await trx('users').returning('id').insert({
                 login,
                 password: password_crypt,
+                notification_token,
             });
 
             await trx('persons').insert({
@@ -120,7 +122,7 @@ function functions() {
             let updated_user = await trx('persons').where({user_id: isUser.id}).first('*');
             trx.commit();
             return response.json({
-                status: true,
+                status: 'SUCCESS',
                 message: 'updated',
                 updated_user,
             });
@@ -128,7 +130,7 @@ function functions() {
         } catch (error) {
             console.log(error)
             trx.rollback();
-            return response.json({status: 'error', message: error});
+            return response.json({status: 'ERROR', message: error});
         }
     }
 
