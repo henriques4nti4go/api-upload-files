@@ -4,6 +4,7 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const authKey = require('../config/auth.json');
 const Token = require('../auth/token');
+const UserConversation = require('../database/Models/UserConversation');
 
 function functions() {
 
@@ -16,9 +17,10 @@ function functions() {
                 message,
             } = request.body;
             
-            let { conversation_id } = await trx('user_conversations')
-            .first('conversation_id')
-            .whereIn('user_id',[user_id, user_target]);
+            let {conversation_id} = await trx('user_conversations')
+            .first('*')
+            .where({user_id})
+            .where({user_target_id: user_target});
             
             let user_conversation = await  trx('user_conversations')
             .where({conversation_id})
@@ -63,8 +65,9 @@ function functions() {
 
             let data = await trx('user_conversations')
             .first('*')
-            .whereIn('user_id',[user_id, user_target]);
-            
+            .where({user_id})
+            .where({user_target_id: user_target});
+            // return console.log(data == false)
             if (data) {
                 conversation_id = data.conversation_id;
             } else {
@@ -81,6 +84,7 @@ function functions() {
                 .insert({
                     conversation_id,
                     user_id,
+                    user_target_id: user_target
                 })
                 .returning('id');
 
@@ -88,6 +92,7 @@ function functions() {
                 .insert({
                     conversation_id,
                     user_id: user_target,
+                    user_target_id: user_id,
                 })
                 .returning('id');
             }
@@ -121,23 +126,20 @@ function functions() {
                 user_id,
             } = request.body;
 
-            let user_conversation = await connection('user_conversations')
-            .first('*')
-            .where({user_id});
+            let conversations = await UserConversation.query()
+            .select('*')
+            .where({user_id})
+            .withGraphFetched('conversation(returnFirstMessage)');
 
-            let conversation = await connection('user_conversations')
-            .first('*')
-            .where({conversation_id: user_conversation.conversation_id})
-            .where('user_id','<>',user_id)
-            console.log(conversation)
             return response.json({
                 status: 'SUCCESS',
                 message: 'your conversations',
                 state: true,
-                response: conversation,
+                response: conversations,
             })
             
         } catch (error) {
+            console.log(error)
             return response.json({
                 message: 'on error has ocurred',
                 error,
