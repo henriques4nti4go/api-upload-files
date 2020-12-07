@@ -9,7 +9,7 @@ class Index extends Model {
     static get modifiers() {
         return {
           returnFirstMessage(builder) {
-            builder.first('message','created_at')
+            builder.select('message','created_at')
             .orderBy('created_at','desc')
             .where({status: 1});
           },

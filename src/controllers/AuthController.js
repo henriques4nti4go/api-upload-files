@@ -10,10 +10,10 @@ function functions() {
         try {
             const req = request.headers;
             const token = req['auth-token'];
-            const {
-                user_id,
-            } = request.body;
-            
+            let user_id;
+            if (req['user_id']) user_id = req['user_id'];
+            if (request.body['user_id']) user_id = request.body['user_id'];
+
             if (!token) {
                 return response.json({
                     message: 'you need to authenticate',
@@ -22,7 +22,7 @@ function functions() {
             
             let auth = jwt.verify(token,authKey.SECRET_KEY);
             
-            if (auth.id !== user_id) {
+            if (auth.id != user_id) {
                 return response.json({
                     status: 'ERROR TOKEN',
                     message: 'token does not belong to the user',

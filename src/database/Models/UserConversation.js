@@ -11,8 +11,8 @@ class Index extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: ConversationMessages,
         join: {
-          from: 'user_conversations.id',
-          to: 'conversation_messages.user_conversation_id',
+          from: 'user_conversations.conversation_id',
+          to: 'conversation_messages.conversation_id',
         }
       },
     };

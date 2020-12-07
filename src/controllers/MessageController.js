@@ -130,7 +130,7 @@ function functions() {
             .select('*')
             .where({user_id})
             .withGraphFetched('conversation(returnFirstMessage)');
-
+            console.log(conversations)
             return response.json({
                 status: 'SUCCESS',
                 message: 'your conversations',

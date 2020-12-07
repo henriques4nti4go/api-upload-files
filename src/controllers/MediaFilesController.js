@@ -27,40 +27,46 @@ function functions() {
             const {
                 user_id,
                 description,
+                profile_photo,
             } = request.body;
-            
+
             const {
                 filename,
                 path,
             } = request.file;
 
             let date = getDate;
-
+            
             let {Location,Key} = await uploadImageAws({
                 filename: `${filename}.jpeg`,
                 path,
             });
 
-            let media_id = await trx('media_files').insert({
-                user_id,
-                uri: Location,
-                key: Key,
-                created_at: date,
-                updated_at: date,
-            }).returning('id');
+            if (profile_photo) {
+                await trx('persons').where({user_id}).update({profile_photo: Location});
+            } else {
+                let media_id = await trx('media_files').insert({
+                    user_id,
+                    uri: Location,
+                    key: Key,
+                    created_at: date,
+                    updated_at: date,
+                }).returning('id');
+                
+                await trx('posts').insert({
+                    user_id,
+                    media_id: media_id[0],
+                    description: description,
+                    created_at: date,
+                    updated_at: date,
+                })
+    
+            }
             
-            await trx('posts').insert({
-                user_id,
-                media_id: media_id[0],
-                description: description,
-                created_at: date,
-                updated_at: date,
-            })
-
             trx.commit();
             return response.json({
-                status: true,
-                message: 'created',
+                status: 'SUCCESS',
+                message: 'image uploaded',
 
             });
 
@@ -74,7 +80,7 @@ function functions() {
     const uploadImageAws = async function (file) {
 
         const fileContent = fs.readFileSync(file.path);
-        let objectParams = {Bucket: bucketName, Key: file.filename, Body: fileContent, ACL: "public-read", ContentType: 'image/png'};
+        let objectParams = {Bucket: 'old-times-42b6d6fa76e48a', Key: file.filename, Body: fileContent, ACL: "public-read", ContentType: 'image/png'};
         // Create object upload promise
         
         let { Location, Key } = await uploadPromise.upload(objectParams).promise();
@@ -89,19 +95,22 @@ function functions() {
     const getMediaFiles = async function (request, response) {
         try {
             const {
-                id,
+                user_target
             } = request.body;
     
             // const img = await Images.query().where('user_id',id).select('*'); 
-            const posts = await Post.query().withGraphFetched('media');
+            const posts = await Post.query()
+            .where({user_id: user_target})
+            .withGraphFetched('media');
     
             return response.json({
-                data: posts, 
+                response: posts, 
                 status: 'success'
             });
         } catch (error) {
+            console.log(error)
             return response.json({
-                data: error,
+                response: error,
                 status: 'error',
             });
         }
