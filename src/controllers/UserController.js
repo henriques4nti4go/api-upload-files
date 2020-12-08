@@ -158,7 +158,7 @@ function functions() {
                 rows = await connection('persons')
                 .innerJoin('users','user_id','=','users.id')
                 .where('user_id','<>',user_id)
-                .whereRaw(`name like '${user_name}%'`)
+                .whereRaw(`login like '${user_name}%'`)
                 .select('users.login','persons.*');
             }
             return response.json({
