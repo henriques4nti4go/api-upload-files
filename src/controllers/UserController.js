@@ -7,6 +7,7 @@ const Token = require('../auth/token');
 const getDate = require('../helpers/date');
 const User = require('../database/Models/User');
 const Person = require('../database/Models/Person');
+const { default: Axios } = require('axios');
 
 function functions() {
     const register = async function (request, response) {
@@ -20,9 +21,11 @@ function functions() {
                 password,
                 genre,
                 notification_token,
+                lat,
+                lng
             } = request.body;
 
-            
+
             let isUser = await verifyUser(login);
             
             if (isUser.status) 
@@ -32,6 +35,9 @@ function functions() {
                 });
 
             password_crypt = await bcrypt.hash(password, 10);
+
+            const {city, country, state} = await processCoords({lat,lng});
+            
             
             let table = await trx('users').returning('id').insert({
                 login,
@@ -44,6 +50,12 @@ function functions() {
                 name,
                 date_of_birth: date_of_birth,
                 genre,
+                city,
+                country,
+                state,
+                city,
+                country,
+                state,
             })
 
             trx.commit();
@@ -59,6 +71,36 @@ function functions() {
         }
     }
     
+    const processCoords = async function (coords) {
+        try {
+
+            const key = require('../config/google.json').mapsKey;
+            const urlApiMaps = require('../config/google.json').urlApiMaps;
+            const { data } = await Axios({
+                url: urlApiMaps,
+                method: 'GET',
+                params: {
+                    latlng:`${coords.lat},${coords.lng}`,
+                    key,
+                }
+            });
+
+            let locationUser = {};
+            // console.log(data.results[0].address_components.length)
+            data.results[0].address_components.forEach(element => {
+                // console.log(element)
+                if (element.types.indexOf('administrative_area_level_2') != -1 && element.types.indexOf('political') != -1) { locationUser['city'] = element.long_name }
+                if (element.types.indexOf('administrative_area_level_1') != -1 && element.types.indexOf('political') != -1) { locationUser['state'] = element.long_name }
+                if (element.types.indexOf('country') != -1 && element.types.indexOf('political') != -1) {locationUser['country'] = element.long_name};
+            });
+
+            return locationUser;
+
+        } catch (error) {
+            
+        }
+    }
+
     const verifyUser = async function (login) {
         let response = await connection('users').where({login:login}).first('id');
         let status = false;

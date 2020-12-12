@@ -41,27 +41,23 @@ function functions() {
                 filename: `${filename}.jpeg`,
                 path,
             });
-
-            if (profile_photo) {
-                await trx('persons').where({user_id}).update({profile_photo: Location});
-            } else {
-                let media_id = await trx('media_files').insert({
-                    user_id,
-                    uri: Location,
-                    key: Key,
-                    created_at: date,
-                    updated_at: date,
-                }).returning('id');
-                
-                await trx('posts').insert({
-                    user_id,
-                    media_id: media_id[0],
-                    description: description,
-                    created_at: date,
-                    updated_at: date,
-                })
-    
-            }
+            
+            
+            let media_id = await trx('media_files').insert({
+                user_id,
+                uri: Location,
+                key: Key,
+                created_at: date,
+                updated_at: date,
+            }).returning('id');
+            
+            await trx('posts').insert({
+                user_id,
+                media_id: media_id[0],
+                description: description,
+                created_at: date,
+                updated_at: date,
+            });
             
             trx.commit();
             return response.json({
