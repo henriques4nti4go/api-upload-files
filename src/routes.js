@@ -1,19 +1,35 @@
 const express = require('express');
 const crypto = require('crypto');
-// const connection = require('./database/connection.js');
-const users = require('./controllers/UserController');
-const message = require('./controllers/MessageController');
 const media = require('./controllers/MediaFilesController');
-const auth = require('./controllers/AuthController');
-const friends = require('./controllers/InteractionController');
 const route = express.Router();
 const jwt  = require('jsonwebtoken');
-const authKey = require('./config/auth.json');
 const multer = require('multer');
-const { Expo } = require('expo-server-sdk');
 const Axios = require('axios').default;
 
-const multerConfig = require('./config/multer');
+const MAX_SIZE_TWO_MEGABYTES = 2 * 1024 * 1024;
+
+const storageTypes = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'uploads');
+    },
+    filename: (req, file, cb) => {
+      crypto.randomBytes(16, (err, hash) => {
+        if (err) cb(err);
+
+        file.key = `${hash.toString("hex")}-${file.originalname}`;
+        console.log(file)
+        cb(null, file.key);
+      });
+    },
+  });
+
+
+
+const multerConfig = multer({
+  dest: 'uploads',
+  storage: storageTypes,
+  
+});
 
 route.get('/', async (req, res) => {
    
@@ -21,147 +37,9 @@ route.get('/', async (req, res) => {
 });
 
 
-async function sendNotification(params) {
-    try {
-        
-    
-    let expo = new Expo();
-    await expo.sendPushNotificationsAsync([{
-        to: 'ExponentPushToken[nhI0eZJXlbLGzRMDtUySBA]',
-        sound: 'default',
-        body: 'This is a test notification',
-        data: { withSome: 'data' },
-    }]);
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-/**
- * @login
- * 
- * @params
- * name: String 
- * login: String Required
- * 
- * @return
- * status: String
- * message: String
- */
-
-route.post('/api/auth/login', auth.login);
-
-/**
- * @register
- * 
- * @params
- * name: String Required
- * login: String Required
- * password: String Required
- * date_of_birth: Date Required
- * genre: Integer Required
- * @return
- * status: String
- * message: String
- */
-route.post('/api/user/register', users.register);
-
-route.use(auth.authenticateWithToken);
-
-/**
- * @profile_edit
- * 
- * @params
- * token: String Required
- * name: String Required
- * login: String Required
- * password: String Required
- * date_of_birth: Date 
- * genre: Integer
- * city: String
- * state: String
- * country: String
- * profile_photo: String
- * 
- * @return
- * status: Boolean
- * message: String
- */
-route.post('/api/user/updateProfile', users.updateProfile);
-
-route.use(auth.authenticateWithToken);
-route.post('/api/user/updateProfile', users.updateProfile);
-route.post('/api/user/friends/sendSolicitation', friends.sendFriendSolicitation);
-route.post('/api/user/friends/cancelSolicitation', friends.cancelFriendSolicitation);
-route.post('/api/user/friends/getSolicitation', friends.getFriendSolicitation);
-route.post('/api/user/friends/responseSolicitation', friends.responseFriendSolicitation);
-route.post('/api/user/friends/hasSolicitation', friends.hasSendFriendSolicitation);
-route.post('/api/user/friends', friends.getFriends);
-route.post('/api/user/friends/cancelFriendship', friends.cancelFriendship);
-
-/**
- * @are_friends
- * 
- * @method
- * POST
- * 
- * @params
- * token: String Required
- * user_id: integer Required
- * solicitation_user_id: Integer Required
- * 
- * @return
- * status: String
- * message: String
- * response: Boolean
- */
-
-route.post('/api/user/friends/areFriends', friends.areFriends);
-
-/**
- * @search_user
- * 
- * @params
- * token: String Required
- * user_id: integer Required
- * user_name: String Required
- * 
- * @return
- * status: String
- * message: String
- * response: Object
- */
-
-route.post('/api/user/search/user', users.searchUser);
-
-
-/**
- * @get_profile
- * 
- * @method 
- * POST
- * @params
- * token: String Required
- * user_id: integer Required
- * user_target: Integer String
- * 
- * @return
- * status: String
- * message: String
- * response: Object
- */
-
-route.post('/api/user/profile/get', users.getProfile);
-
-route.post('/api/user/messages/send', message.sendMessage);
-route.post('/api/user/messages/get', message.getMessages);
-route.post('/api/user/messages/getConversations', message.getConversations);
-
-
-route.post('/api/user/uploadPhotos',multer(multerConfig).single('image'), media.uploadPhotos);
-route.post('/api/user/getMediaFiles', media.getMediaFiles);
-route.post('/api/user/deleteMediaFiles', media.deleteMediaFiles);
-route.post('/api/user/setProfileImage', users.setProfileImage);
+route.post('/uploadFile',multer(multerConfig).single('image'), media.uploadPhotos);
+route.get('/getMediaFiles', media.getMediaFiles);
+route.post('/deleteMediaFiles', media.deleteMediaFiles);
 
 
 
