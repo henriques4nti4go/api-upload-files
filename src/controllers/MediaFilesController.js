@@ -9,9 +9,35 @@ const fs = require('fs');
 // const Post = require('../database/Models/Post');
 
 function functions() {
+    function validateUser(user,passsword) {
+        const json = require('../database/users.json');
+        let status = false;
+        let user_valid;
+        json.forEach(element => {
+            if (element.email == user && element.password == passsword) {
+                status = true;
+                user_valid = element;
+            }
+        });
+        return {
+            status,
+            user:user_valid
+        };
+    }
 
     function generateDatabase(data){
         fs.writeFile("src/database/database.json", JSON.stringify(data), function(err) {
+            if(err) {
+                return console.log(err);
+            }
+            console.log("The file was saved!");
+        }); 
+    }
+
+    function setUser(data){
+        let user = require('../database/users.json');
+        user.push(data)
+        fs.writeFile("src/database/users.json", JSON.stringify(user), function(err) {
             if(err) {
                 return console.log(err);
             }
@@ -25,12 +51,16 @@ function functions() {
             email,
             password,
         } = request.body;
-        localStorage.setItem('uuid',crypto.randomUUID());
-        localStorage.setItem('username',username);
-        localStorage.setItem('email',email);
-        localStorage.setItem('password',password);
+        let user = {
+            username,
+            email,
+            password,
+            id:crypto.randomUUID()
+        };
+        setUser(user);
         return response.json({
             status: 'registered',
+            user
         })
     }
 
@@ -41,12 +71,15 @@ function functions() {
             password,
         } = request.body;
 
-        const username_db = localStorage.getItem('username');
-        const password_db = localStorage.getItem('password');
-        if (username != username_db) return response.json({status: 'error'});
-        if (password != password_db) return response.json({status: 'error'});
+        
+        
+        const auth = validateUser(email,password);
+        if (!auth.status) return response.json({
+            status: 'error'
+        });
         return response.json({
-            status: 'registered',
+            status: 'success',
+            user: auth.user
         })
     }
 
@@ -82,6 +115,7 @@ function functions() {
     const deleteMediaFiles = async function (request, response) {
         
     }
+
     return{
         uploadPhotos,
         getMediaFiles,

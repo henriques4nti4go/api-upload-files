@@ -1,20 +1,18 @@
-POST http://localhost:3333/api/auth/login
+POST http://localhost:3333/login
 Content-Type: application/json
 
 {
-    "login": "paulo2",
-    "password": 12345678
+    "email": "paulo",
+    "password": 123123
 }
 #####
-POST http://localhost:3333/api/user/register
+POST http://localhost:3333/register
 Content-Type: application/json
 
 {
-    "name": "paulo",
-    "login": "paulo2",
-    "password": "123456789",
-    "date_of_birth": "1996-08-23",
-    "genre": 1
+    "email": "paulo",
+    "username": "asdkas",
+    "password": "123123"
 }
 
 #####
