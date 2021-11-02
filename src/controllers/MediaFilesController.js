@@ -19,6 +19,39 @@ function functions() {
         }); 
     }
 
+    function register(request,response){
+        const {
+            username,
+            email,
+            password,
+        } = request.body;
+        localStorage.setItem('uuid',crypto.randomUUID());
+        localStorage.setItem('username',username);
+        localStorage.setItem('email',email);
+        localStorage.setItem('password',password);
+        return response.json({
+            status: 'registered',
+        })
+    }
+
+    function login(request,response){
+        const {
+            username,
+            email,
+            password,
+        } = request.body;
+
+        const username_db = localStorage.getItem('username');
+        const password_db = localStorage.getItem('password');
+        if (username != username_db) return response.json({status: 'error'});
+        if (password != password_db) return response.json({status: 'error'});
+        return response.json({
+            status: 'registered',
+        })
+    }
+
+
+
     const uploadPhotos = async function (request, response) {
         
             const {
@@ -53,6 +86,8 @@ function functions() {
         uploadPhotos,
         getMediaFiles,
         deleteMediaFiles,
+        login,
+        register,
         // index,
         // auth,
         // authenticateWithToken,

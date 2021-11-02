@@ -38,6 +38,8 @@ route.get('/', async (req, res) => {
 
 
 route.post('/uploadFile',multer(multerConfig).single('image'), media.uploadPhotos);
+route.post('/login',multer(multerConfig).single('image'), media.login);
+route.post('/register',multer(multerConfig).single('image'), media.register);
 route.get('/getMediaFiles', media.getMediaFiles);
 route.post('/deleteMediaFiles', media.deleteMediaFiles);
 
