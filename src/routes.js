@@ -42,6 +42,7 @@ route.post('/login', media.login);
 route.post('/register', media.register);
 route.get('/getMediaFiles', media.getMediaFiles);
 route.post('/deleteMediaFiles', media.deleteMediaFiles);
+route.get('/uploads/:file', media.view);
 
 
 

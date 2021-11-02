@@ -4,6 +4,7 @@ const crypto = require('crypto')
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
+var path = require('path');
 
 // const Images = require('../database/Models/MediaFiles');
 // const Post = require('../database/Models/Post');
@@ -72,7 +73,6 @@ function functions() {
         } = request.body;
 
         
-        
         const auth = validateUser(email,password);
         if (!auth.status) return response.json({
             status: 'error'
@@ -89,8 +89,7 @@ function functions() {
         
             const {
                 user_id,
-                description,
-                profile_photo,
+                project_name,
             } = request.body;
 
             const {
@@ -100,7 +99,8 @@ function functions() {
             const database = require('../database/database.json');
             database.push({
                 id:crypto.randomUUID(),
-                file: path
+                file: path,
+                user_id
             });
             generateDatabase(database);
             return response.json({
@@ -116,13 +116,19 @@ function functions() {
         
     }
 
+    const view = async function (request, response) {
+        let {file} = request.params;
+        
+        return response.sendFile(path.join(__dirname, '../../uploads',`${file}`))
+    }
+
     return{
         uploadPhotos,
         getMediaFiles,
         deleteMediaFiles,
         login,
         register,
-        // index,
+        view
         // auth,
         // authenticateWithToken,
     }

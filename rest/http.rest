@@ -16,14 +16,12 @@ Content-Type: application/json
 }
 
 #####
-POST  http://localhost:3333/api/user/friends/sendSolicitation
+GET  http://localhost:3333/getMediaFiles
+Content-Type: application/json
+#####
+GET  http://localhost:3333/uploads/1231
 Content-Type: application/json
 
-{
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJwYXVsbyIsInBhc3N3b3JkIjoiJDJhJDEwJGdTUFduVTIxVjBXSFA0LkpxaEFjNC5SbHlwZms2SU42azZTcXlyN3pFWjFyQ3B6OU9XOGZPIiwiaWF0IjoxNjA1NjEzNTY2fQ.SwFipAHTwDD8vclatbIgwkk34CqgplHaKLrvyx6d2P0",
-    "user_id": 1,
-    "solicitation_user_id": 2
-}
 #####
 POST  http://localhost:3333/api/user/friends/cancelSolicitation
 Content-Type: application/json
